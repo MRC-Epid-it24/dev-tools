@@ -6,6 +6,8 @@ import Chalk = require('chalk');
 
 export interface Settings {
     pgDumpCommand: string;
+    pgRestoreCommand: string;
+    psqlCommand: string;
     defaultDumpDirectory: string;
 }
 
@@ -18,6 +20,8 @@ export class SettingsLoader {
         this.homeDirectoryPath = homeDirectoryPath;
         this.defaults = {
             pgDumpCommand: 'pg_dump',
+            pgRestoreCommand: 'pg_restore',
+            psqlCommand: 'psql',
             defaultDumpDirectory: path.join(homeDirectoryPath, 'data-dumps')
         };
     }

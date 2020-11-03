@@ -1,6 +1,7 @@
 export class Constants {
     static readonly homeDirectoryName = '.intake24';
     static readonly settingsFileName = 'settings.json';
+    static readonly vmBuilderSettingsFileName = 'vm-builder.json';
     static readonly databaseProfilesFileName = 'database-profiles.json';
     static readonly imageFileName = 'base-image.ova';
     static readonly systemDatabaseFileName = 'system-init.zip';
