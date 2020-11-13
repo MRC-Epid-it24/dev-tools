@@ -186,7 +186,7 @@ export default class DatabaseProfileCommands {
 
                 let outputDirectoryPath = args['path'] || settings.defaultDumpDirectory;
 
-                this.ensureDirectoryExists(outputDirectoryPath);
+                await this.ensureDirectoryExists(outputDirectoryPath);
 
                 let envVars = profile.system.password ? {PGPASSWORD: profile.system.password} : undefined;
 

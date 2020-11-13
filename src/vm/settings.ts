@@ -122,7 +122,7 @@ export class VirtualMachineSettingsLoader {
                 throw err;
             }
 
-            console.log('\nCreated a default settings file at ' + Chalk.blueBright(settingsFilePath) + ', please review and/or edit before continuing.');
+            console.log('\nCreated a default VM builder settings file at ' + Chalk.blueBright(settingsFilePath) + ', please review and/or edit before continuing.');
 
             await fs.promises.writeFile(settingsFilePath, JSON.stringify(this.defaults, null, 4));
 

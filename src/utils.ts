@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import Chalk = require('chalk');
+import Vorpal = require('vorpal');
 
 export function makeTimeStamp(): string {
     let date = new Date();
@@ -27,5 +29,40 @@ export async function getMostRecentFile(dirPath: string, filter: (name: string) 
         }
 
         return mostRecentPath;
+    }
+}
+
+export interface Logger {
+    highlight(str: string): string;
+
+    warning(str: string): string;
+
+    bold(str: string): string;
+
+    log(message: string): void;
+}
+
+export class VorpalLogger implements Logger {
+    private readonly vorpal: Vorpal;
+
+    constructor(vorpal: Vorpal) {
+        this.vorpal = vorpal;
+    }
+
+    highlight(str: string): string {
+        return Chalk.blueBright(str);
+    }
+
+    warning(str: string): string {
+        return Chalk.whiteBright(Chalk.bgRed(str));
+    }
+
+
+    log(message: string): void {
+        this.vorpal.activeCommand.log(message);
+    }
+
+    bold(str: string): string {
+        return Chalk.whiteBright(Chalk.bold(str));
     }
 }
