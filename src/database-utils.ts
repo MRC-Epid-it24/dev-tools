@@ -1,8 +1,8 @@
 import {DatabaseConnectionParameters, DatabaseProfile} from './databases';
 import {execCollectOutput, execDisplayOutput, ExecResult} from './exec-utils';
-import {Settings} from './settings';
+import {GlobalSettings} from './settings';
 
-export async function runPsqlCommand(settings: Settings, connection: DatabaseConnectionParameters, additionalArguments: string[], command: string, runAsSuperuser: boolean): Promise<ExecResult> {
+export async function runPsqlCommand(settings: GlobalSettings, connection: DatabaseConnectionParameters, additionalArguments: string[], command: string, runAsSuperuser: boolean): Promise<ExecResult> {
     let user = runAsSuperuser ? connection.superuser : connection.user;
 
     if (!user)
@@ -20,7 +20,7 @@ export async function runPsqlCommand(settings: Settings, connection: DatabaseCon
     return await execCollectOutput(settings.psqlCommand, args, undefined, envVars);
 }
 
-export async function databaseExists(settings: Settings, connection: DatabaseConnectionParameters): Promise<boolean> {
+export async function databaseExists(settings: GlobalSettings, connection: DatabaseConnectionParameters): Promise<boolean> {
     let output = await runPsqlCommand(
         settings,
         connection,
@@ -31,7 +31,7 @@ export async function databaseExists(settings: Settings, connection: DatabaseCon
     return output.stdout.trim() === '1';
 }
 
-export async function dropDatabase(settings: Settings, connection: DatabaseConnectionParameters): Promise<void> {
+export async function dropDatabase(settings: GlobalSettings, connection: DatabaseConnectionParameters): Promise<void> {
 
     let preventConnections = `
         -- Disallow new connections
@@ -57,7 +57,7 @@ export async function dropDatabase(settings: Settings, connection: DatabaseConne
 
 }
 
-export async function createDatabase(settings: Settings, connection: DatabaseConnectionParameters): Promise<void> {
+export async function createDatabase(settings: GlobalSettings, connection: DatabaseConnectionParameters): Promise<void> {
     await runPsqlCommand(
         settings,
         connection,

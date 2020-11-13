@@ -59,7 +59,10 @@ export class VorpalLogger implements Logger {
 
 
     log(message: string): void {
-        this.vorpal.activeCommand.log(message);
+        if (this.vorpal.activeCommand)
+            this.vorpal.activeCommand.log(message);
+        else
+            this.vorpal.log(message);
     }
 
     bold(str: string): string {

@@ -2,9 +2,9 @@ import Vorpal = require('vorpal');
 import Chalk = require('chalk');
 import {ensureHomeDirectoryExists} from './homedir';
 import DatabaseProfileCommands from './databases';
-import {Settings, SettingsLoader} from './settings';
+import {GlobalSettingsLoader} from './settings';
 import VirtualMachineCommands from './vm/commands';
-import {VirtualMachineSettingsLoader} from './vm/settings';
+import {VorpalLogger} from './utils';
 
 const vorpal = new Vorpal();
 
@@ -13,18 +13,19 @@ vorpal.log('Type "help" to get started.');
 
 let homeDirectoryOverride = process.argv[2];
 
+let logger = new VorpalLogger(vorpal);
+
 ensureHomeDirectoryExists(homeDirectoryOverride).then(
     homeDir => {
         if (homeDir.created) {
-            vorpal.log('\nCreated new directory for settings and cached data at ' + Chalk.blueBright(homeDir.path));
+            logger.log(`Created new directory for settings and cached data at ${logger.highlight(homeDir.path)}`);
         }
 
-        const settingsLoader = new SettingsLoader(homeDir.path);
-        const vmSettingsLoader = new VirtualMachineSettingsLoader(homeDir.path);
+        const settingsLoader = new GlobalSettingsLoader(homeDir.path, logger);
 
-        settingsLoader.load().then(_ => {
+        settingsLoader.load().then(settings => {
             new DatabaseProfileCommands(homeDir.path, settingsLoader).register(vorpal);
-            new VirtualMachineCommands(homeDir.path, vmSettingsLoader).register(vorpal);
+            new VirtualMachineCommands(homeDir.path, settings.defaultDumpDirectory, logger).register(vorpal);
 
             vorpal
                 .delimiter('>')

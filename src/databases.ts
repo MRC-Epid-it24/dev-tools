@@ -2,7 +2,7 @@ import * as path from 'path';
 import {Constants} from './constants';
 import * as fs from 'fs';
 import validate from './databases.validator';
-import {SettingsLoader} from './settings';
+import {GlobalSettingsLoader} from './settings';
 import {execDisplayOutput} from './exec-utils';
 import Vorpal = require('vorpal');
 import Chalk = require('chalk');
@@ -32,9 +32,9 @@ export default class DatabaseProfileCommands {
 
     private readonly homeDirectoryPath: string;
     private readonly profileFilePath: string;
-    private settingsLoader: SettingsLoader;
+    private settingsLoader: GlobalSettingsLoader;
 
-    constructor(homeDirectoryPath: string, settingsLoader: SettingsLoader) {
+    constructor(homeDirectoryPath: string, settingsLoader: GlobalSettingsLoader) {
         this.homeDirectoryPath = homeDirectoryPath;
         this.settingsLoader = settingsLoader;
         this.profileFilePath = path.join(homeDirectoryPath, Constants.databaseProfilesFileName);
@@ -190,11 +190,9 @@ export default class DatabaseProfileCommands {
 
                 let envVars = profile.system.password ? {PGPASSWORD: profile.system.password} : undefined;
 
-                const timeStamp = makeTimeStamp();
-
                 if (blank) {
-                    let outputSchemaPath = path.join(outputDirectoryPath, `intake24_system_${timeStamp}_schema`);
-                    let outputDataPath = path.join(outputDirectoryPath, `intake24_system_${timeStamp}_data`);
+                    let outputSchemaPath = path.join(outputDirectoryPath, `intake24_system_schema`);
+                    let outputDataPath = path.join(outputDirectoryPath, `intake24_system_data`);
 
                     vorpal.activeCommand.log(`Exporting ${Chalk.whiteBright('system database schema')} to ${Chalk.blueBright(outputSchemaPath)}`);
 
@@ -210,7 +208,7 @@ export default class DatabaseProfileCommands {
                             'local_nutrient_types', '-t', 'schema_version', '-t', 'flyway_migrations', '-f', outputDataPath, profile.system.database],
                         undefined, envVars);
                 } else {
-                    let outputPath = path.join(outputDirectoryPath, `intake24_system_${timeStamp}`);
+                    let outputPath = path.join(outputDirectoryPath, `intake24_system`);
 
                     vorpal.activeCommand.log(`Exporting ${Chalk.whiteBright('system database')} to ${Chalk.blueBright(outputPath)}`);
 
@@ -245,7 +243,7 @@ export default class DatabaseProfileCommands {
 
                 let envVars = profile.foods.password ? {PGPASSWORD: profile.foods.password} : undefined;
 
-                let outputPath = path.join(outputDirectoryPath, `intake24_foods_${makeTimeStamp()}`);
+                let outputPath = path.join(outputDirectoryPath, `intake24_foods`);
 
                 vorpal.activeCommand.log(`Exporting ${Chalk.whiteBright('food database')} to ${Chalk.blueBright(outputPath)}`);
 
