@@ -115,7 +115,7 @@ export default class DatabaseProfileCommands {
 
     register(vorpal: Vorpal) {
         vorpal
-            .command('db list', 'Lists all known database profiles.')
+            .command('db profile list', 'Lists all known database profiles.')
             .action(args => this.load().then(profiles => {
 
                 let names = Object.keys(profiles);
@@ -131,7 +131,7 @@ export default class DatabaseProfileCommands {
 
 
         vorpal
-            .command('db init <name>', 'Initializes a new database profile with default values.')
+            .command('db profile init <name>', 'Initializes a new database profile with default values.')
             .action(args => {
 
                 let name = args['name'];
@@ -144,7 +144,7 @@ export default class DatabaseProfileCommands {
 
 
         vorpal
-            .command('db delete <name>', 'Deletes a database profile.')
+            .command('db profile delete <name>', 'Deletes a database profile.')
             .action(args => {
                 return this.load().then(profiles => {
 

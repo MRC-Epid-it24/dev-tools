@@ -157,6 +157,10 @@ export default class VirtualMachineCommands {
 
                 await deployment.createDatabases();
 
+                await deployment.installRedis();
+
+                this.logger.log(this.logger.bold("Done =)"));
+
             });
     }
 }

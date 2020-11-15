@@ -10,6 +10,14 @@ import {getV4AnsiblePostgresConfiguration} from './v4-postgres-config';
 export class V4Deployment extends DeploymentUtils {
     private readonly settings: V4DevSettings;
 
+    private static readonly redisAllowAllConfig =
+        `{
+           "redis": {
+            "protectedMode": "no"
+           }
+         }
+         `;
+
     constructor(settings: V4DevSettings, buildId: string, logger: Logger) {
         super(settings.deployment.directory, buildId, logger);
 
@@ -17,7 +25,7 @@ export class V4Deployment extends DeploymentUtils {
     }
 
     async createDeployUser(): Promise<void> {
-        this.logger.log('Creating deploy user...');
+        this.logger.log(this.logger.bold('\nCreating deploy user...'));
 
         this.replaceInFile(path.resolve(this.buildInstanceDirectoryPath, 'hosts'), 'localhost', this.settings.virtualBox.ip4address);
 
@@ -58,7 +66,7 @@ export class V4Deployment extends DeploymentUtils {
     }
 
     async createDatabases(): Promise<void> {
-        this.logger.log('Creating databases...');
+        this.logger.log(this.logger.bold('\nCreating databases...'));
 
         await fs.promises.writeFile(path.resolve(this.buildInstanceDirectoryPath, 'postgres', 'postgres-configuration.yml'),
             getV4AnsiblePostgresConfiguration(
@@ -67,5 +75,14 @@ export class V4Deployment extends DeploymentUtils {
                 this.settings.databases.foodsSnapshot));
 
         await this.execDeploymentScript('database-init.sh');
+    }
+
+    async installRedis(): Promise<void> {
+        this.logger.log(this.logger.bold('\nInstalling redis...'));
+
+        await fs.promises.writeFile(path.resolve(this.buildInstanceDirectoryPath, 'redis', 'redis-config.json'),
+            V4Deployment.redisAllowAllConfig);
+
+        await this.execDeploymentScript('redis.sh');
     }
 }
