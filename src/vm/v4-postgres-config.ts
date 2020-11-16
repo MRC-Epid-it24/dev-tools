@@ -65,5 +65,8 @@ postgresql_pg_ident:
 postgresql_listen_addresses:
   - "*"
 
-postgresql_ssl: off`;
+postgresql_ssl: off
+postgresql_logging_collector: on
+postgresql_log_statement: all
+`;
 }
