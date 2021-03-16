@@ -13,6 +13,7 @@ intake24:
     user: intake24
     name: intake24_foods
     snapshot_path: ${foodsSnapshotPath}
+  create_test_databases: true  
 
 # Basic settings
 postgresql_version: 12
@@ -49,6 +50,18 @@ postgresql_pg_hba_custom:
     user: "{{intake24.food_database.user}}"
     address: "all"
     method: "trust"
+  - comment: "Allow passwordless connections from any host to system test DB"
+    type: host
+    database: "{{intake24.system_database.name}}_test"
+    user: "{{intake24.system_database.user}}"
+    address: "all"
+    method: "trust"
+  - comment: "Allow passwordless connections from any host to food test DB"
+    type: host
+    database: "{{intake24.food_database.name}}_test"
+    user: "{{intake24.food_database.user}}"
+    address: "all"
+    method: "trust"    
 
 # pg_ident.conf
 postgresql_pg_ident:
